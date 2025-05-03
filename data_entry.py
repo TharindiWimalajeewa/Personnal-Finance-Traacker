@@ -18,7 +18,7 @@ def get_date(prompt, allow_default = False):
 
 def get_amount():
     try:
-        amount = float("Enter the amount: ")
+        amount = float(input("Enter the amount: "))
         if amount <=0:
             raise ValueError("Amount must be a non-negative non-zero value")
         return amount

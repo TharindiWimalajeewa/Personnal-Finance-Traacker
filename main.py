@@ -2,6 +2,7 @@ import pandas as pd #used for handling CSV files
 import csv
 from datetime import datetime 
 #This imports just the datetime class from the datetime module directly
+from data_entry import get_date,get_amount,get_category,get_description,date_format
 
 class CSV:
     CSV_FILE = "finance_data.csv"
@@ -32,7 +33,35 @@ class CSV:
             writer.writerow(new_entry)
         print("Entry added successfully")
 
+    @classmethod
+    def get_trnsactions(cls,start_date,end_date):
+        df = pd.read_csv(cls.CSV_FILE)
+        df["date"] = pd.to_datetime(df["date"],format = date_format)
+        start_date = datetime.strptime(start_date,date_format)
+        end_date = datetime.strptime(end_date,date_format)
 
+        mask = (df["date"] >= start_date) & (df["date"]<=end_date)
+        filtered_df = df.loc[mask]
 
-CSV.initialize_csv ()
-CSV.add_entry("20-07-2024",125.65, "Income", "Salary")
+        if filtered_df.empty:
+            print("No transaction in the given date range")
+
+        else:
+            print(f"Transactions from {start_date.strftime(date_format)} to {end_date.strftime(date_format)}")
+
+            print(
+                filtered_df.to_string(index=False, formatters={"date": lambda x: x.strftime(date_format)})
+            )
+
+def add():
+    CSV.initialize_csv()
+
+    date = get_date("Enter the date in (dd-mm-yyyy) format or enter for today's date",allow_default=True)
+
+    amount = get_amount()
+    category = get_category()
+    description = get_description()
+
+    CSV.add_entry (date,amount,category,description)
+
+add()
