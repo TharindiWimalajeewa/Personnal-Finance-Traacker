@@ -34,7 +34,7 @@ class CSV:
         print("Entry added successfully")
 
     @classmethod
-    def get_trnsactions(cls,start_date,end_date):
+    def get_transactions(cls,start_date,end_date):
         df = pd.read_csv(cls.CSV_FILE)
         df["date"] = pd.to_datetime(df["date"],format = date_format)
         start_date = datetime.strptime(start_date,date_format)
@@ -53,6 +53,14 @@ class CSV:
                 filtered_df.to_string(index=False, formatters={"date": lambda x: x.strftime(date_format)})
             )
 
+            total_income = filtered_df[filtered_df["category"]== "Income"]["amount"].sum()
+            #Filters the DataFrame to only include rows where the category is "Income"
+
+            total_expense = filtered_df[filtered_df["category"]=="Expense"]["amount"].sum()
+
+            print(f"Total Income: {total_income:.2f}")
+            print(f"Total Expense: {total_expense:.2f}")
+
 def add():
     CSV.initialize_csv()
 
@@ -64,4 +72,4 @@ def add():
 
     CSV.add_entry (date,amount,category,description)
 
-add()
+CSV.get_transactions("01-01-2024","01-01-2026")
