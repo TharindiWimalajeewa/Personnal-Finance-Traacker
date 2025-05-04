@@ -3,6 +3,7 @@ import csv
 from datetime import datetime 
 #This imports just the datetime class from the datetime module directly
 from data_entry import get_date,get_amount,get_category,get_description,date_format
+import matplotlib.pyplot as plt
 
 class CSV:
     CSV_FILE = "finance_data.csv"
@@ -71,6 +72,23 @@ def add():
     description = get_description()
 
     CSV.add_entry (date,amount,category,description)
+
+def plot_transaction(df):
+    df.set_index('date',inplace = True)
+
+    income_df = df[df["category"]=="Income"].resample("D").sum().reindex(df.index,fill_value=0)
+
+    expense_df = df[df["category"]=="Expense"].resample("D").sum().reindex(df.index,fill_value=0)
+
+    plt.figure(figsize=(10,5))
+    plt.plot(income_df.index, income_df["amount"],label = "Income",color = "g")
+    plt.plot(income_df.index, expense_df["amount"],label = "Expense",color = "g")
+    plt.xlabel("Date")
+    plt.ylabel("Amount")
+    plt.title("Income and Expenses Over Time")
+    plt.legend()
+    plt.grid(True)
+
 
 def main():
     while True:
