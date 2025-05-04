@@ -46,6 +46,7 @@ class CSV:
 
         if filtered_df.empty:
             print("No transaction in the given date range")
+            return None
 
         else:
             print(f"Transactions from {start_date.strftime(date_format)} to {end_date.strftime(date_format)}")
@@ -61,6 +62,7 @@ class CSV:
 
             print(f"Total Income: {total_income:.2f}")
             print(f"Total Expense: {total_expense:.2f}")
+            return filtered_df
 
 def add():
     CSV.initialize_csv()
@@ -74,20 +76,23 @@ def add():
     CSV.add_entry (date,amount,category,description)
 
 def plot_transaction(df):
+    # Set the 'date' column as the index for time-based operations
     df.set_index('date',inplace = True)
 
-    income_df = df[df["category"]=="Income"].resample("D").sum().reindex(df.index,fill_value=0)
+    # Filter for Income entries, resample daily, sum amounts, and reindex to match the original index (fill missing with 0)
+    income_df = df[df["category"]=="Income"].resample("D").sum(numeric_only=True).reindex(df.index,fill_value=0)
 
-    expense_df = df[df["category"]=="Expense"].resample("D").sum().reindex(df.index,fill_value=0)
+    expense_df = df[df["category"]=="Expense"].resample("D").sum(numeric_only=True).reindex(df.index,fill_value=0)
 
     plt.figure(figsize=(10,5))
     plt.plot(income_df.index, income_df["amount"],label = "Income",color = "g")
-    plt.plot(income_df.index, expense_df["amount"],label = "Expense",color = "g")
+    plt.plot(income_df.index, expense_df["amount"],label = "Expense",color = "r")
     plt.xlabel("Date")
     plt.ylabel("Amount")
     plt.title("Income and Expenses Over Time")
     plt.legend()
     plt.grid(True)
+    plt.show()
 
 
 def main():
@@ -103,6 +108,8 @@ def main():
             start_date = get_date("Enter the start date (dd-mm-yyyy)")
             end_date = get_date("Enter the end date (dd-mm-yyyy)")
             df = CSV.get_transactions(start_date,end_date)
+            if input("Do you wanna see a plot? (y/n)").lower()=="y":
+                plot_transaction(df)
         elif choice == "3":
             print("Exiting...")
             break

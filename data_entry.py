@@ -10,7 +10,7 @@ def get_date(prompt, allow_default = False):
 
     try:
         valid_date = datetime.strptime(date_str,date_format)
-        return valid_date.strftime(date_str,date_format)
+        return valid_date.strftime(date_format)
     except ValueError:
         print("Invalid Date Format. Please enter the date in dd-mm-yyyy format")
         return get_date(prompt,allow_default)
