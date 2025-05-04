@@ -74,7 +74,7 @@ def add():
 
 def main():
     while True:
-        print("\n1/ Add a new Transaction")
+        print("\n1. Add a new Transaction")
         print("2. View summary within a date range")
         print("3. Exit")
         choice = input("Enter your choice (1-3)")
@@ -91,8 +91,5 @@ def main():
         else:
             print("Invalid choice")
 
-if __name__ == "__main":
+if __name__ == "__main__":
     main()
-    
-
-CSV.get_transactions("01-01-2024","01-01-2026")
